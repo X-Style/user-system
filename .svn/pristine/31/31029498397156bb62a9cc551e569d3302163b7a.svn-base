@@ -1,0 +1,37 @@
+<template>
+  <div class="login">
+    <loginSidebar></loginSidebar>
+    <loginMain></loginMain>
+  </div>
+</template>
+
+<script>
+import loginSidebar from '../../components/login/loginSidebar.vue'
+import loginMain from '../../components/login/loginMain.vue'
+import { mapActions } from 'vuex'
+
+export default {
+  name: 'login',
+  components: {
+    loginSidebar,
+    loginMain
+  },
+  created () {
+    console.log(this.$Message, '1111111111111')
+    this.login({
+      loading: false,
+      success: data => {
+        console.log(data)
+      },
+      error: err => {
+        console.log(err, '11')
+      }
+    })
+  },
+  methods: {
+    ...mapActions([
+      'login'
+    ])
+  }
+}
+</script>

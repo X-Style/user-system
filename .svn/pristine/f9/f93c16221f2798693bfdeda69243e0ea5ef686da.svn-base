@@ -1,0 +1,24 @@
+import Vue from 'vue'
+import Vuex from 'vuex'
+import { STATUS } from './utils/vuexUtils/helpers'
+import * as loginAction from './views/login/vuex/actions'
+import loginMutations from './views/login/vuex/mutations'
+import loginStates from './views/login/vuex/state'
+
+Vue.use(Vuex)
+
+export default new Vuex.Store({
+  state: {
+    RECEIVE_STATUS: STATUS.INIT,
+    ...loginStates
+  },
+  mutations: {
+    LOADING_STATUS (state, action) {
+      state['RECEIVE_STATUS'] = action
+    },
+    ...loginMutations
+  },
+  actions: {
+    ...loginAction
+  }
+})

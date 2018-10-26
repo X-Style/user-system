@@ -1,0 +1,44 @@
+<template>
+  <div class="login-sidebar">
+    <a class="logo"></a>
+    <i class="login-txt"></i>
+  </div>
+</template>
+
+<script>
+// @ is an alias to /src
+export default {
+  name: 'loginSidebar'
+}
+</script>
+
+<style>
+.login-sidebar{
+    width: 32%;
+    height: 100vh;
+    float: left;
+    background: url(../../assets/images/login-bg.jpg) no-repeat center;
+    background-size:cover;
+    position: relative
+}
+.logo{ 
+    display: block;
+    width: 140px;
+    height: 68px;
+    background: url(../../assets/images/login-logo.png) no-repeat center;
+    position: absolute;
+    left: 8%;
+    top: 3%
+}
+.login-txt{
+    display: block;
+    width: 306px;
+    height: 95px;
+    background: url(../../assets/images/login-txt.png) no-repeat center;
+    position: absolute;
+    left: 50%;
+    top: 45%;
+    margin-left: -153px
+
+}
+</style>

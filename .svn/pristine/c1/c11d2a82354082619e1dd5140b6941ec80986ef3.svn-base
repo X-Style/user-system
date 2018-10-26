@@ -1,0 +1,5 @@
+@swiper-indicator-active-color: #5e97f6;
+@tabbar-text-active-color: #5e97f6;
+@header-background-color: #5e97f6;
+@header-arrow-color: #fff;
+@checklist-icon-active-color: #5e97f6;

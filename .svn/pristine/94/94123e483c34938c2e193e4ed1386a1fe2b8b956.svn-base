@@ -1,0 +1,64 @@
+import {
+  isFunc,
+  isPromise,
+  hasPromise,
+  buildPromiseQueue,
+  STATUS
+} from './helpers'
+
+const dispatchAction = (commit, action, status, callBackHandler) => {
+  const { type, payload } = action
+  callBackHandler && callBackHandler(payload)
+  commit(type, {
+    __status__: status,
+    __payload__: payload
+  })
+}
+
+const commitAsPending = (commit, action, { loading = true }) => {
+  loading && commit('LOADING_STATUS', STATUS.PENDING)
+  dispatchAction(commit, action, STATUS.PENDING)
+}
+
+const commitAsSuccess = (commit, action, { loading = true, success = {} }) => {
+  loading && commit('LOADING_STATUS', STATUS.SUCCESS)
+  dispatchAction(commit, action, STATUS.SUCCESS, success.handler)
+}
+
+const commitAsError = (commit, action, { loading = true, error = {} }) => {
+  loading && commit('LOADING_STATUS', STATUS.ERROR)
+  dispatchAction(commit, action, STATUS.ERROR, error.handler)
+}
+
+const createAction = (type, payloadCreator, affix) => {
+  const finalPayloadCreator = isFunc(payloadCreator) ? payloadCreator : (...args) => args[0]
+  const affixFn = isFunc(affix) ? affix : () => ({})
+
+  return ({ dispatch, commit }, ...args) => {
+    const payload = finalPayloadCreator(...args)
+    const affix = affixFn(...args)
+    const action = { type, payload }
+    commit = commit || dispatch
+
+    if (isPromise(payload)) {
+      commitAsPending(commit, action, affix)
+      return payload.then(
+        result => commitAsSuccess(commit, Object.assign(action, { payload: result }), affix),
+        error => commitAsError(commit, Object.assign(action, { payload: error }), affix)
+      )
+    }
+
+    if (hasPromise(payload)) {
+      const promiseQueue = buildPromiseQueue(payload)
+      commitAsPending(commit, action, affix)
+      return promiseQueue
+        .run(...args)
+        .then(result => commitAsSuccess(commit, action, affix))
+        .catch(error => commitAsError(commit, Object.assign(action, { payload: error }), affix))
+    }
+
+    return commitAsSuccess(commit, action)
+  }
+}
+
+export default createAction
